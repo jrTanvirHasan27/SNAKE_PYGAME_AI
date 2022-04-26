@@ -71,15 +71,17 @@ class SnakeGame:
                 elif event.key == pygame.K_DOWN:
                     self.direction = Direction.DOWN
         # Move
+        self._move(self.direction)      # update head
+        self.snake.insert(0, self.head)
 
         # Check if game over
+        game_Over = False
 
         # update Ui and clock
         self._update_ui()
         self.clock.tick(SPEED)
 
         # return game over and score
-        game_Over = False
         return game_Over, self.score
 
     def _update_ui(self):
@@ -94,6 +96,20 @@ class SnakeGame:
         text = font.render("Score: "+str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
+
+    def _move(self, direction):
+        x = self.head.x
+        y = self.head.y
+        if direction == Direction.RIGHT:
+            x += BLOCK_SIZE
+        elif direction == Direction.LEFT:
+            x -= BLOCK_SIZE
+        elif direction == Direction.UP:
+            y -= BLOCK_SIZE
+        elif direction == Direction.DOWN:
+            y += BLOCK_SIZE
+
+        self.head = point(x, y)
 
 
 if __name__ == '__main__':
