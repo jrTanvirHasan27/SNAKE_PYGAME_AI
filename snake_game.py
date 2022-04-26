@@ -76,6 +76,8 @@ class SnakeGame:
 
         # Check if game over
         game_Over = False
+        if self._is_collied():
+            game_Over = True
 
         # update Ui and clock
         self._update_ui()
@@ -83,6 +85,16 @@ class SnakeGame:
 
         # return game over and score
         return game_Over, self.score
+
+    def _is_collied(self):
+        # hits boundary
+        if self.head.x > self.w - BLOCK_SIZE or self.head.x < 0 or self.head.y > self.h - BLOCK_SIZE or self.head.y < 0:
+            return True
+        # hits itself
+        if self.head in self.snake[1:]:
+            return True
+
+        return False
 
     def _update_ui(self):
         self.display.fill(BLACK)
