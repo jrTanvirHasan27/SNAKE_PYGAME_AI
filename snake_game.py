@@ -6,6 +6,7 @@ from enum import Enum
 pygame.init()
 font = pygame.font.Font('OpenSans-Regular.ttf', 25)
 
+
 class Direction(Enum):
     RIGHT = 1
     UP = 3
@@ -15,7 +16,7 @@ class Direction(Enum):
 
 point = namedtuple('point', ('x', 'y'))
 BLOCK_SIZE = 20
-SPEED = 45
+SPEED = 10
 
 # rgb colors
 
@@ -79,6 +80,13 @@ class SnakeGame:
         if self._is_collied():
             game_Over = True
 
+        # place food or move
+        if self.head == self.food:
+            self.score += 1
+            self._place_food()
+        else:
+            self.snake.pop()
+
         # update Ui and clock
         self._update_ui()
         self.clock.tick(SPEED)
@@ -135,6 +143,6 @@ if __name__ == '__main__':
         if game_Over:
             break
 
-    print('Final Score: ', score)
+    print('Final Score:', score)
 
     pygame.quit()
