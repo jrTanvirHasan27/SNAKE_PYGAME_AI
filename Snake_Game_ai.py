@@ -33,7 +33,7 @@ WHITE = (255, 255, 255)
 CYAN = (191, 250, 243)
 
 
-class SnakeGame:
+class AISnakeGame:
 
     def __init__(self, w=640, h=480):
         self.w = w
