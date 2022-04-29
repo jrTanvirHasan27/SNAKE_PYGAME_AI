@@ -19,7 +19,51 @@ class Agent:
         # Todo: model, trainer
 
     def state_get(self, game):
-        pass
+        head = game.snake[0]
+        point_l = point(head.x-20, head.y)
+        point_r = point(head.x+20, head.y)
+        point_u = point(head.x, head.y-20)
+        point_d = point(head.x, head.y+20)
+
+        dir_l = game.direction == Direction.LEFT
+        dir_r = game.direction == Direction.RIGHT
+        dir_u = game.direction == Direction.UP
+        dir_d = game.direction == Direction.DOWN
+
+        state = [
+            # Danger straight
+            (dir_r and game._is_collide(point_r)) or
+            (dir_l and game._is_collide(point_l)) or
+            (dir_u and game._is_collide(point_u)) or
+            (dir_d and game._is_collide(point_d)),
+
+            # Danger right
+            (dir_u and game._is_collide(point_r)) or
+            (dir_d and game._is_collide(point_l)) or
+            (dir_l and game._is_collide(point_u)) or
+            (dir_r and game._is_collide(point_d)),
+
+            # Danger left
+            (dir_d and game._is_collide(point_r)) or
+            (dir_u and game._is_collide(point_l)) or
+            (dir_r and game._is_collide(point_u)) or
+            (dir_l and game._is_collide(point_d)),
+
+            # Move Direction
+            dir_l,
+            dir_r,
+            dir_u,
+            dir_d
+
+            # Food Location
+            game.food.x < game.head.x,    # left food
+            game.food.x > game.head.x,    # right food
+            game.food.y < game.head.y,    # up food
+            game.food.y > game.head.y     # down food
+        ]
+
+        return np.array(state, dtype=int)
+
 
     def remember(self, state, action, reward, state_next, done):
         pass
