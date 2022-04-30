@@ -23,7 +23,7 @@ class Direction(Enum):
 
 point = namedtuple('point', ('x', 'y'))
 BLOCK_SIZE = 20
-SPEED = 10
+SPEED = 60
 
 # rgb colors
 
@@ -81,7 +81,7 @@ class AISnakeGame:
         # Check if game over
         reward = 0
         game_Over = False
-        if self._is_collide() or self.frame_iteration > 100*len(self.snake):
+        if self.is_collide() or self.frame_iteration > 100 * len(self.snake):
             reward = -10
             game_Over = True
             return reward, game_Over, self.score
@@ -101,11 +101,11 @@ class AISnakeGame:
         # return game over and score
         return reward, game_Over, self.score
 
-    def _is_collide(self, pt=None):
-        if pt in None:
+    def is_collide(self, pt=None):
+        if pt is None:
             pt = self.head
         # hits boundary
-        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > pt - BLOCK_SIZE or pt.y < 0:
+        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
             return True
         # hits itself
         if self.head in self.snake[1:]:
@@ -155,5 +155,3 @@ class AISnakeGame:
             y += BLOCK_SIZE
 
         self.head = point(x, y)
-
-

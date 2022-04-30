@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import os
-
-from torch import optim
+import torch.optim as optim
 
 
 class Linear_QNet(nn.Module):
@@ -58,7 +57,7 @@ class QTrainer:
             if not done[index]:
                 Q_new = reward[index] + self.gamma * torch.max(next_state[index])
 
-            target[index][torch.argmax(action).item()] = Q_new
+            target[index][torch.argmax(action[index]).item()] = Q_new
 
         # 2: Q_new = r + y * max(next_predicted Q value)   --> only do this if not donw
         # pred.clone()
