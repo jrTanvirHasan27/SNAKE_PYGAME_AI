@@ -16,7 +16,9 @@ class Agent:
         self.epsilon = 0  # for randomness
         self.gamma = 0    # discount rate
         self.memory = deque(maxlen=MEMORY_MAX)  #  popleft()
-        # Todo: model, trainer
+        self.model = None # Todo
+        self.trainer = None # Todo
+
 
     def state_get(self, game):
         head = game.snake[0]
@@ -53,7 +55,7 @@ class Agent:
             dir_l,
             dir_r,
             dir_u,
-            dir_d
+            dir_d,
 
             # Food Location
             game.food.x < game.head.x,    # left food
@@ -66,16 +68,34 @@ class Agent:
 
 
     def remember(self, state, action, reward, state_next, done):
-        pass
+        self.memory.append((state, action, reward, state_next, done))  # popleft if MEMEORY_MAX
 
     def long_memory_train(self):
-        pass
+        if len(self.memory) > SIZE_BATCH:
+            min_sample = random.sample(self.memory, SIZE_BATCH)   # list of tuples
+        else:
+            min_sample = self.memory
+
+        states, actions, rewards, state_nexts, dones = zip(*min_sample)
+        self.trainer.train_step(states, actions, rewards, state_nexts, dones)
 
     def short_memory_train(self, state, action, reward, state_next, done):
-        pass
+        self.trainer.train_step(state, action, reward, state_next, done)
 
     def action_get(self, state):
-        pass
+        # random moves: tradeoff exploration / exploitation
+        self.epsilon = 80 - self.no_game
+        final_move = [0,0,0]
+        if random.randint(0, 200) < self.epsilon:
+            move = random.randint(0, 2)
+            final_move[move] = 1
+        else:
+            state0 = torch.tensor(state, dtype=torch.float)
+            prediction = self.model.predict(state0)
+            move = torch.argmax(prediction).item()
+            final_move[move] = 1
+
+        return final_move
 
 
  def train():
